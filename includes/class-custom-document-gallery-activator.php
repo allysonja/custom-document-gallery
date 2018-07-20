@@ -52,7 +52,7 @@ class Custom_Document_Gallery_Activator {
 	/**
 	 * Create galleries table.
 	 *
-	 * Create galleries table. The gallery table has the id (primary key), the name, the created date, and the updated date.
+	 * Create galleries table. The gallery table has the id (primary key), the name, the created date, the updated date, and the deleted date.
 	 *
 	 * @since    1.0.0
 	 */
@@ -63,16 +63,20 @@ class Custom_Document_Gallery_Activator {
 
 		$charset_collate = $wpdb->get_charset_collate();
 
-		$sql = $wpdb->query("CREATE TABLE $table_name (
-			id mediumint(9) NOT NULL AUTO_INCREMENT,
-			name varchar(55) NOT NULL,
-			created_date datetime DEFAULT CURRENT_TIMESTAMP NOT NULL,
-			updated_date datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP NOT NULL,
-			PRIMARY KEY  (id)
-		) $charset_collate;");
+		if($wpdb->get_var("SHOW TABLES LIKE '$table_name'") != $table_name) {
 
-		require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
-		dbDelta($sql);
+			$sql = $wpdb->query("CREATE TABLE $table_name (
+				id mediumint(9) NOT NULL AUTO_INCREMENT,
+				name varchar(55) NOT NULL,
+				created_date datetime DEFAULT CURRENT_TIMESTAMP NOT NULL,
+				updated_date datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP NOT NULL,
+				deleted_date datetime,
+				PRIMARY KEY  (id)
+			) $charset_collate;");
+
+			require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
+			dbDelta($sql);
+		}
 	}
 
 	/**
@@ -90,22 +94,25 @@ class Custom_Document_Gallery_Activator {
 
 		$charset_collate = $wpdb->get_charset_collate();
 
-		$sql = $wpdb->query("CREATE TABLE $table_name (
-			id mediumint(9) NOT NULL AUTO_INCREMENT,
-			name varchar(55) NOT NULL,
-			document_gallery_id mediumint(9) NOT NULL,
-			created_date datetime DEFAULT CURRENT_TIMESTAMP NOT NULL,
-			updated_date datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP NOT NULL,
-			document_url varchar(255) NOT NULL,
-			thumbnail_url varchar(255) NOT NULL,
-			sort_order int NOT NULL DEFAULT 2147483647,
-			PRIMARY KEY (id),
-			CONSTRAINT FK_document_galleries FOREIGN KEY (document_gallery_id)
-			REFERENCES $galleries_table_name(id)
-			ON DELETE CASCADE
-		) $charset_collate;");
-		require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
-		dbDelta($sql);
+		if($wpdb->get_var("SHOW TABLES LIKE '$table_name'") != $table_name) {
+
+			$sql = $wpdb->query("CREATE TABLE $table_name (
+				id mediumint(9) NOT NULL AUTO_INCREMENT,
+				name varchar(55) NOT NULL,
+				document_gallery_id mediumint(9) NOT NULL,
+				created_date datetime DEFAULT CURRENT_TIMESTAMP NOT NULL,
+				updated_date datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP NOT NULL,
+				document_url varchar(255) NOT NULL,
+				thumbnail_url varchar(255) NOT NULL,
+				sort_order int NOT NULL DEFAULT 2147483647,
+				PRIMARY KEY (id),
+				CONSTRAINT FK_document_galleries FOREIGN KEY (document_gallery_id)
+				REFERENCES $galleries_table_name(id)
+				ON DELETE CASCADE
+			) $charset_collate;");
+			require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
+			dbDelta($sql);
+		}
 	}
 
 	private static function create_directories(){
