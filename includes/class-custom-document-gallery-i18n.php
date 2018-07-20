@@ -9,8 +9,8 @@
  * @link       http://example.com
  * @since      1.0.0
  *
- * @package    Custom_Document_Gallery_2
- * @subpackage Custom_Document_Gallery_2/includes
+ * @package    Custom_Document_Gallery
+ * @subpackage Custom_Document_Gallery/includes
  */
 
 /**
@@ -20,11 +20,11 @@
  * so that it is ready for translation.
  *
  * @since      1.0.0
- * @package    Custom_Document_Gallery_2
- * @subpackage Custom_Document_Gallery_2/includes
- * @author     Your Name <email@example.com>
+ * @package    Custom_Document_Gallery
+ * @subpackage Custom_Document_Gallery/includes
+ * @author     Sonja Linton <sonjamw17@gmail.com>
  */
-class Custom_Document_Gallery_2_i18n {
+class Custom_Document_Gallery_i18n {
 
 
 	/**
@@ -35,7 +35,7 @@ class Custom_Document_Gallery_2_i18n {
 	public function load_plugin_textdomain() {
 
 		load_plugin_textdomain(
-			'custom-document-gallery-2',
+			'custom-document-gallery',
 			false,
 			dirname( dirname( plugin_basename( __FILE__ ) ) ) . '/languages/'
 		);

@@ -6,8 +6,8 @@
  * @link       http://example.com
  * @since      1.0.0
  *
- * @package    Custom_Document_Gallery_2
- * @subpackage Custom_Document_Gallery_2/includes
+ * @package    Custom_Document_Gallery
+ * @subpackage Custom_Document_Gallery/includes
  */
 
 /**
@@ -16,11 +16,11 @@
  * This class defines all code necessary to run during the plugin's deactivation.
  *
  * @since      1.0.0
- * @package    Custom_Document_Gallery_2
- * @subpackage Custom_Document_Gallery_2/includes
- * @author     Your Name <email@example.com>
+ * @package    Custom_Document_Gallery
+ * @subpackage Custom_Document_Gallery/includes
+ * @author     Sonja Linton <sonjamw17@gmail.com>
  */
-class Custom_Document_Gallery_2_Deactivator {
+class Custom_Document_Gallery_Deactivator {
 
 	/**
 	 * Short Description. (use period)

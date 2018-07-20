@@ -6,8 +6,8 @@
  * @link       http://example.com
  * @since      1.0.0
  *
- * @package    Custom_Document_Gallery_2
- * @subpackage Custom_Document_Gallery_2/includes
+ * @package    Custom_Document_Gallery
+ * @subpackage Custom_Document_Gallery/includes
  */
 
 /**
@@ -16,12 +16,12 @@
  * This class defines all code necessary to run during the plugin's activation.
  *
  * @since      1.0.0
- * @package    Custom_Document_Gallery_2
- * @subpackage Custom_Document_Gallery_2/includes
- * @author     Your Name <email@example.com>
+ * @package    Custom_Document_Gallery
+ * @subpackage Custom_Document_Gallery/includes
+ * @author     Sonja Linton <sonjamw17@gmail.com>
  */
 
-class Custom_Document_Gallery_2_Activator {
+class Custom_Document_Gallery_Activator {
 
 	/**
 	 * Create database tables, create paths and directories for media uploads.
@@ -46,7 +46,7 @@ class Custom_Document_Gallery_2_Activator {
 		self::create_gallery_table();
 		self::create_media_table();
 
-		update_option( 'CUSTOM_DOCUMENT_GALLERY_2_DATABASE_VERSION', CUSTOM_DOCUMENT_GALLERY_2_DATABASE_VERSION );
+		update_option( 'CUSTOM_DOCUMENT_GALLERY_DATABASE_VERSION', CUSTOM_DOCUMENT_GALLERY_DATABASE_VERSION );
 	}
 
 	/**
@@ -110,7 +110,7 @@ class Custom_Document_Gallery_2_Activator {
 
 	private static function create_directories(){
 		$upload_dir = wp_upload_dir();
-		$base_dir = $upload_dir["basedir"] . '/custom_document_gallery_2/';
+		$base_dir = $upload_dir["basedir"] . '/custom_document_gallery/';
 		$dir = $base_dir . 'documents/';
 		self::create_path($dir);
 	}

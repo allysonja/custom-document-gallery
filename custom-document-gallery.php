@@ -10,11 +10,11 @@
  *
  * @link              http://example.com
  * @since             1.0.0
- * @package           Custom_Document_Gallery_2
+ * @package           Custom_Document_Gallery
  *
  * @wordpress-plugin
  * Plugin Name:       Custom Document Gallery
- * Plugin URI:        http://example.com/custom-document-gallery-2-uri/
+ * Plugin URI:        http://example.com/custom-document-gallery-uri/
  * Description:       This is a short description of what the plugin does. It's displayed in the WordPress admin area.
  * Version:           1.0.0
  * Author:            Sonja Linton
@@ -35,41 +35,55 @@ if ( ! defined( 'WPINC' ) ) {
  * Start at version 1.0.0 and use SemVer - https://semver.org
  * Rename this for your plugin and update it as you release new versions.
  */
-define( 'CUSTOM_DOCUMENT_GALLERY_2_VERSION', '1.0.0' );
+define( 'CUSTOM_DOCUMENT_GALLERY_VERSION', '1.0.0' );
 
 /**
  * Current database version.
  * Start at version 1.0.0 and use SemVer - https://semver.org
  * Rename this for your database and update it as you release new versions.
  */
-define( 'CUSTOM_DOCUMENT_GALLERY_2_DATABASE_VERSION', '1.0.0' );
+define( 'CUSTOM_DOCUMENT_GALLERY_DATABASE_VERSION', '1.0.0' );
+
+/**
+ * Define path to plugin directory and url.
+ */
+if ( ! defined( 'CUSTOM_DOCUMENT_GALLERY_DIR' ) ) {
+	define( 'CUSTOM_DOCUMENT_GALLERY_DIR', plugin_dir_path( __FILE__ ) );
+}
+
+/**
+ * Define url to plugin directory.
+ */
+if ( ! defined( 'CUSTOM_DOCUMENT_GALLERY_URL' ) ) {
+	define( 'CUSTOM_DOCUMENT_GALLERY_URL', plugin_dir_url( __FILE__ ) );
+}
 
 /**
  * The code that runs during plugin activation.
- * This action is documented in includes/class-custom-document-gallery-2-activator.php
+ * This action is documented in includes/class-custom-document-gallery-activator.php
  */
-function activate_custom_document_gallery_2() {
-	require_once plugin_dir_path( __FILE__ ) . 'includes/class-custom-document-gallery-2-activator.php';
-	Custom_Document_Gallery_2_Activator::activate();
+function activate_custom_document_gallery() {
+	require_once plugin_dir_path( __FILE__ ) . 'includes/class-custom-document-gallery-activator.php';
+	Custom_Document_Gallery_Activator::activate();
 }
 
 /**
  * The code that runs during plugin deactivation.
- * This action is documented in includes/class-custom-document-gallery-2-deactivator.php
+ * This action is documented in includes/class-custom-document-gallery-deactivator.php
  */
-function deactivate_custom_document_gallery_2() {
-	require_once plugin_dir_path( __FILE__ ) . 'includes/class-custom-document-gallery-2-deactivator.php';
-	Custom_Document_Gallery_2_Deactivator::deactivate();
+function deactivate_custom_document_gallery() {
+	require_once plugin_dir_path( __FILE__ ) . 'includes/class-custom-document-gallery-deactivator.php';
+	Custom_Document_Gallery_Deactivator::deactivate();
 }
 
-register_activation_hook( __FILE__, 'activate_custom_document_gallery_2' );
-register_deactivation_hook( __FILE__, 'deactivate_custom_document_gallery_2' );
+register_activation_hook( __FILE__, 'activate_custom_document_gallery' );
+register_deactivation_hook( __FILE__, 'deactivate_custom_document_gallery' );
 
 /**
  * The core plugin class that is used to define internationalization,
  * admin-specific hooks, and public-facing site hooks.
  */
-require plugin_dir_path( __FILE__ ) . 'includes/class-custom-document-gallery-2.php';
+require plugin_dir_path( __FILE__ ) . 'includes/class-custom-document-gallery.php';
 
 /**
  * Begins execution of the plugin.
@@ -80,10 +94,10 @@ require plugin_dir_path( __FILE__ ) . 'includes/class-custom-document-gallery-2.
  *
  * @since    1.0.0
  */
-function run_custom_document_gallery_2() {
+function run_custom_document_gallery() {
 
-	$plugin = new Custom_Document_Gallery_2();
+	$plugin = new Custom_Document_Gallery();
 	$plugin->run();
 
 }
-run_custom_document_gallery_2();
+run_custom_document_gallery();

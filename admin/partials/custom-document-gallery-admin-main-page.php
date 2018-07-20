@@ -8,9 +8,10 @@
  * @link       http://example.com
  * @since      1.0.0
  *
- * @package    Custom_Document_Gallery_2
- * @subpackage Custom_Document_Gallery_2/admin/partials
+ * @package    Custom_Document_Gallery
+ * @subpackage Custom_Document_Gallery/admin/partials
  */
 ?>
 
 <!-- This file should primarily consist of HTML with a little bit of PHP. -->
+<h2> THIS IS THE TITLE </h2>

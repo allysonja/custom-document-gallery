@@ -9,8 +9,8 @@
  * @link       http://example.com
  * @since      1.0.0
  *
- * @package    Custom_Document_Gallery_2
- * @subpackage Custom_Document_Gallery_2/includes
+ * @package    Custom_Document_Gallery
+ * @subpackage Custom_Document_Gallery/includes
  */
 
 /**
@@ -23,11 +23,11 @@
  * version of the plugin.
  *
  * @since      1.0.0
- * @package    Custom_Document_Gallery_2
- * @subpackage Custom_Document_Gallery_2/includes
- * @author     Your Name <email@example.com>
+ * @package    Custom_Document_Gallery
+ * @subpackage Custom_Document_Gallery/includes
+ * @author     Sonja Linton <sonjamw17@gmail.com>
  */
-class Custom_Document_Gallery_2 {
+class Custom_Document_Gallery {
 
 	/**
 	 * The loader that's responsible for maintaining and registering all hooks that power
@@ -35,7 +35,7 @@ class Custom_Document_Gallery_2 {
 	 *
 	 * @since    1.0.0
 	 * @access   protected
-	 * @var      Custom_Document_Gallery_2_Loader    $loader    Maintains and registers all hooks for the plugin.
+	 * @var      Custom_Document_Gallery_Loader    $loader    Maintains and registers all hooks for the plugin.
 	 */
 	protected $loader;
 
@@ -44,9 +44,9 @@ class Custom_Document_Gallery_2 {
 	 *
 	 * @since    1.0.0
 	 * @access   protected
-	 * @var      string    $custom_document_gallery_2    The string used to uniquely identify this plugin.
+	 * @var      string    $plugin_name    The string used to uniquely identify this plugin.
 	 */
-	protected $custom_document_gallery_2;
+	protected $plugin_name;
 
 	/**
 	 * The current version of the plugin.
@@ -67,12 +67,12 @@ class Custom_Document_Gallery_2 {
 	 * @since    1.0.0
 	 */
 	public function __construct() {
-		if ( defined( 'CUSTOM_DOCUMENT_GALLERY_2_VERSION' ) ) {
-			$this->version = CUSTOM_DOCUMENT_GALLERY_2_VERSION;
+		if ( defined( 'CUSTOM_DOCUMENT_GALLERY_VERSION' ) ) {
+			$this->version = CUSTOM_DOCUMENT_GALLERY_VERSION;
 		} else {
 			$this->version = '1.0.0';
 		}
-		$this->custom_document_gallery_2 = 'custom-document-gallery-2';
+		$this->plugin_name = 'custom-document-gallery';
 
 		$this->load_dependencies();
 		$this->set_locale();
@@ -86,10 +86,10 @@ class Custom_Document_Gallery_2 {
 	 *
 	 * Include the following files that make up the plugin:
 	 *
-	 * - Custom_Document_Gallery_2_Loader. Orchestrates the hooks of the plugin.
-	 * - Custom_Document_Gallery_2_i18n. Defines internationalization functionality.
-	 * - Custom_Document_Gallery_2_Admin. Defines all hooks for the admin area.
-	 * - Custom_Document_Gallery_2_Public. Defines all hooks for the public side of the site.
+	 * - Custom_Document_Gallery_Loader. Orchestrates the hooks of the plugin.
+	 * - Custom_Document_Gallery_i18n. Defines internationalization functionality.
+	 * - Custom_Document_Gallery_Admin. Defines all hooks for the admin area.
+	 * - Custom_Document_Gallery_Public. Defines all hooks for the public side of the site.
 	 *
 	 * Create an instance of the loader which will be used to register the hooks
 	 * with WordPress.
@@ -103,33 +103,33 @@ class Custom_Document_Gallery_2 {
 		 * The class responsible for orchestrating the actions and filters of the
 		 * core plugin.
 		 */
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-custom-document-gallery-2-loader.php';
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-custom-document-gallery-loader.php';
 
 		/**
 		 * The class responsible for defining internationalization functionality
 		 * of the plugin.
 		 */
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-custom-document-gallery-2-i18n.php';
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-custom-document-gallery-i18n.php';
 
 		/**
 		 * The class responsible for defining all actions that occur in the admin area.
 		 */
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/class-custom-document-gallery-2-admin.php';
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/class-custom-document-gallery-admin.php';
 
 		/**
 		 * The class responsible for defining all actions that occur in the public-facing
 		 * side of the site.
 		 */
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/class-custom-document-gallery-2-public.php';
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/class-custom-document-gallery-public.php';
 
-		$this->loader = new Custom_Document_Gallery_2_Loader();
+		$this->loader = new Custom_Document_Gallery_Loader();
 
 	}
 
 	/**
 	 * Define the locale for this plugin for internationalization.
 	 *
-	 * Uses the Custom_Document_Gallery_2_i18n class in order to set the domain and to register the hook
+	 * Uses the Custom_Document_Gallery_i18n class in order to set the domain and to register the hook
 	 * with WordPress.
 	 *
 	 * @since    1.0.0
@@ -137,7 +137,7 @@ class Custom_Document_Gallery_2 {
 	 */
 	private function set_locale() {
 
-		$plugin_i18n = new Custom_Document_Gallery_2_i18n();
+		$plugin_i18n = new Custom_Document_Gallery_i18n();
 
 		$this->loader->add_action( 'plugins_loaded', $plugin_i18n, 'load_plugin_textdomain' );
 
@@ -152,10 +152,13 @@ class Custom_Document_Gallery_2 {
 	 */
 	private function define_admin_hooks() {
 
-		$plugin_admin = new Custom_Document_Gallery_2_Admin( $this->get_custom_document_gallery_2(), $this->get_version() );
+		$plugin_admin = new Custom_Document_Gallery_Admin( $this->plugin_name(), $this->get_version() );
 
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_styles' );
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts' );
+
+		// Hooks into admin_menu hook to add custom page
+    	$this->loader->add_action( 'admin_menu', $plugin_admin, 'create_admin_menu' );
 
 	}
 
@@ -168,7 +171,7 @@ class Custom_Document_Gallery_2 {
 	 */
 	private function define_public_hooks() {
 
-		$plugin_public = new Custom_Document_Gallery_2_Public( $this->get_custom_document_gallery_2(), $this->get_version() );
+		$plugin_public = new Custom_Document_Gallery_Public( $this->plugin_name(), $this->get_version() );
 
 		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_styles' );
 		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_scripts' );
@@ -191,15 +194,15 @@ class Custom_Document_Gallery_2 {
 	 * @since     1.0.0
 	 * @return    string    The name of the plugin.
 	 */
-	public function get_custom_document_gallery_2() {
-		return $this->custom_document_gallery_2;
+	public function plugin_name() {
+		return $this->plugin_name;
 	}
 
 	/**
 	 * The reference to the class that orchestrates the hooks with the plugin.
 	 *
 	 * @since     1.0.0
-	 * @return    Custom_Document_Gallery_2_Loader    Orchestrates the hooks of the plugin.
+	 * @return    Custom_Document_Gallery_Loader    Orchestrates the hooks of the plugin.
 	 */
 	public function get_loader() {
 		return $this->loader;

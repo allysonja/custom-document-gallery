@@ -8,8 +8,8 @@
  * @link       http://example.com
  * @since      1.0.0
  *
- * @package    Custom_Document_Gallery_2
- * @subpackage Custom_Document_Gallery_2/public/partials
+ * @package    Custom_Document_Gallery
+ * @subpackage Custom_Document_Gallery/public/partials
  */
 ?>
 

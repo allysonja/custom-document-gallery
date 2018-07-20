@@ -22,7 +22,7 @@
  * @link       http://example.com
  * @since      1.0.0
  *
- * @package    Custom_Document_Gallery_2
+ * @package    Custom_Document_Gallery
  */
 
 // If uninstall not called from WordPress, then exit.

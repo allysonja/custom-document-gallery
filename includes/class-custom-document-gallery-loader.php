@@ -6,8 +6,8 @@
  * @link       http://example.com
  * @since      1.0.0
  *
- * @package    Custom_Document_Gallery_2
- * @subpackage Custom_Document_Gallery_2/includes
+ * @package    Custom_Document_Gallery
+ * @subpackage Custom_Document_Gallery/includes
  */
 
 /**
@@ -17,11 +17,11 @@
  * the plugin, and register them with the WordPress API. Call the
  * run function to execute the list of actions and filters.
  *
- * @package    Custom_Document_Gallery_2
- * @subpackage Custom_Document_Gallery_2/includes
- * @author     Your Name <email@example.com>
+ * @package    Custom_Document_Gallery
+ * @subpackage Custom_Document_Gallery/includes
+ * @author     Sonja Linton <sonjamw17@gmail.com>
  */
-class Custom_Document_Gallery_2_Loader {
+class Custom_Document_Gallery_Loader {
 
 	/**
 	 * The array of actions registered with WordPress.
