@@ -100,4 +100,22 @@ class Custom_Document_Gallery_Public {
 
 	}
 
+	/**
+	 * Register all shortcodes here.
+	 *
+	 * @since    1.0.0
+	 */
+	public function register_shortcodes() {
+		add_shortcode( 'doc-gallery', array( $this, 'doc_gallery_shortcode_function') );
+	}
+
+	/**
+	 * Load document gallery shortcode html template.
+	 *
+	 * @since    1.0.0
+	 */
+	public function doc_gallery_shortcode_function() {
+		require_once plugin_dir_path( __FILE__ ). 'partials/custom-document-gallery-public-shortcode-template.php';
+	}
+
 }
