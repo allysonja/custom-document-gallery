@@ -25,8 +25,8 @@ $table->prepare_items();
 
     <div class="icon32 icon32-posts-post" id="icon-edit"><br></div>
     <h2><?php _e('Galleries', 'mgpv_example')?>
-    	<a class="add-new-h2" href="<?php echo get_admin_url(get_current_blog_id(), 'admin.php?page=gallery-set-form');?>">
-    		<?php _e('Add new', 'mgpv_example')?>
+    	<a class="add-new-h2" href="<?php echo get_admin_url(get_current_blog_id(), 'admin.php?page=' . CUSTOM_DOCUMENT_GALLERY_PLUGIN_NAME . '-gallery-edit');?>">
+    		<?php _e('Add new', 'custom_document_gallery')?>
     	</a>
     </h2>
 

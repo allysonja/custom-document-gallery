@@ -37,9 +37,9 @@ if(!class_exists('WP_List_Table')){
  * then call $yourInstance->prepare_items() to handle any data manipulation, then
  * finally call $yourInstance->display() to render the table to the page.
  *
- * Our theme for this list table is going to be sets.
+ * Our theme for this list table is going to be set.
  */
-class CDG_Gallery_Table extends WP_List_Table {
+class CDG_Media_Table extends WP_List_Table {
 
 
     /** ************************************************************************
@@ -51,13 +51,12 @@ class CDG_Gallery_Table extends WP_List_Table {
 
         //Set parent defaults
         parent::__construct( array(
-            'singular'  => 'gallery',     //singular name of the listed records
-            'plural'    => 'galleries',    //plural name of the listed records
+            'singular'  => 'media',     //singular name of the listed records
+            'plural'    => 'medias',    //plural name of the listed records
             'ajax'      => false        //does this table support ajax?
         ) );
 
     }
-
 
     /** ************************************************************************
      * Recommended. This method is called when the parent class can't find a method
@@ -85,11 +84,16 @@ class CDG_Gallery_Table extends WP_List_Table {
             case 'name':
             case 'id':
                 return $item[$column_name];
+            case 'thumbnail':
+                ?>
+                    <img src="<?php echo $item['thumbnail_url']; ?>" alt="thumbnail" height="60px" width="60px" />
+                <?php return;
+            case 'sort_order':
+                return $item[$column_name];
             default:
                 return print_r($item,true); //Show the whole array for troubleshooting purposes
         }
     }
-
 
     /** ************************************************************************
      * Recommended. This is a custom column method and is responsible for what
@@ -105,22 +109,23 @@ class CDG_Gallery_Table extends WP_List_Table {
      *
      * @see WP_List_Table::::single_row_columns()
      * @param array $item A singular item (one full row's worth of data)
-     * @return string Text to be placed inside the column <td> (set name only)
+     * @return string Text to be placed inside the column <td> (media name only)
      **************************************************************************/
     function column_name($item){
 
         //Build row actions
         $current = ( !empty($_REQUEST['customvar']) ? $_REQUEST['customvar'] : 'all');
-        if($current == 'deleted'){
+        $gallery_id = $item['document_gallery_id'];
+        if($current == 'trashed'){
             $actions = array(
-                'restore'    => sprintf('<a href="?page=%s&action=%s&gallery=%s">Restore</a>',$_REQUEST['page'],'restore',$item['id']),
-                'delete'    => sprintf('<a href="?page=%s&action=%s&gallery=%s">Permanent Delete</a>',$_REQUEST['page'],'delete',$item['id']),
-
+                'restore'    => sprintf('<a href="?page=%s&action=%s&id=%s&media=%s">Restore</a>',$_REQUEST['page'], 'restore', $gallery_id, $item['id']),
+                'delete'    => sprintf('<a href="?page=%s&action=%s&id=%s&media=%s">Delete Permanently</a>',$_REQUEST['page'],'delete', $gallery_id, $item['id']),
             );
         }else{
             $actions = array(
-                'edit' => sprintf('<a href="?page=%s&id=%s">%s</a>', CUSTOM_DOCUMENT_GALLERY_PLUGIN_NAME . '-gallery-edit', $item['id'], __('Edit', 'mgpv_example')),
-                'trash'    => sprintf('<a href="?page=%s&action=%s&gallery=%s">Delete</a>',$_REQUEST['page'],'trash',$item['id']),
+                'view' => sprintf('<a href="%s" target="_blank">%s</a>', $item['document_url'], __('View', 'mgpv_example')),
+                'edit'      => sprintf('<a href="?page=media-form&gallery-id=%s&id=%s">Edit</a>', $item['document_gallery_id'], $item['id']),
+                'trash'    => sprintf('<a href="?page=%s&action=%s&id=%s&media=%s">Trash</a>',$_REQUEST['page'], 'trash', $gallery_id, $item['id']),
             );
         }
 
@@ -140,12 +145,12 @@ class CDG_Gallery_Table extends WP_List_Table {
      *
      * @see WP_List_Table::::single_row_columns()
      * @param array $item A singular item (one full row's worth of data)
-     * @return string Text to be placed inside the column <td> (set name only)
+     * @return string Text to be placed inside the column <td> (media name only)
      **************************************************************************/
     function column_cb($item){
         return sprintf(
             '<input type="checkbox" name="%1$s[]" value="%2$s" />',
-            /*$1%s*/ $this->_args['singular'],  //Let's simply repurpose the table's singular label ("set")
+            /*$1%s*/ $this->_args['singular'],  //Let's simply repurpose the table's singular label ("media")
             /*$2%s*/ $item['id']                //The value of the checkbox should be the record's id
         );
     }
@@ -167,8 +172,10 @@ class CDG_Gallery_Table extends WP_List_Table {
     function get_columns(){
         $columns = array(
             'cb'        => '<input type="checkbox" />', //Render a checkbox instead of text
+            'id'        => 'ID',
             'name'     => 'name',
-            'id'        => 'ID'
+            'thumbnail' => 'thumbnail',
+            'sort_order' => 'sort_order',
         );
         return $columns;
     }
@@ -190,8 +197,7 @@ class CDG_Gallery_Table extends WP_List_Table {
      **************************************************************************/
     function get_sortable_columns() {
         $sortable_columns = array(
-            'ID'        => array('id',false),
-            'name'     => array('name',false),     //true means it's already sorted
+            'sort_order' => array('sort_order', true),     //true means it's already sorted
         );
         return $sortable_columns;
     }
@@ -213,14 +219,15 @@ class CDG_Gallery_Table extends WP_List_Table {
      **************************************************************************/
     function get_bulk_actions() {
         $current = ( !empty($_REQUEST['customvar']) ? $_REQUEST['customvar'] : 'all');
-        if ($current == 'deleted'){
+        if ($current == 'trashed') {
             $actions = array(
                 'restore' => 'Restore',
-                'delete' => 'Delete Permanently'
+                'delete' => 'Delete'
             );
-        } else {
+        }
+        else {
             $actions = array(
-                'trash' => 'Trash',
+                'trash'    => 'Trash'
             );
         }
         return $actions;
@@ -234,69 +241,67 @@ class CDG_Gallery_Table extends WP_List_Table {
      *
      * @see $this->prepare_items()
      **************************************************************************/
-    function soft_delete($gallery){
+    function trash($media){
         global $wpdb;
 
-        $table_name = $wpdb->prefix . 'document_galleries';
+        $table_name = $wpdb->prefix . 'document_media';
         $data = array(
             'deleted_date' => date('Y-m-d H:i:s'),
             );
         $where = array(
-            'id' => $gallery
+            'id' => $media
             );
         $wpdb->update($table_name, $data, $where);
 
     }
 
-    function hard_delete($gallery){
+    function restore($media){
         global $wpdb;
 
-        $table_name = $wpdb->prefix . 'document_galleries';
-        $wpdb->delete( $table_name, [ 'ID' => $gallery ], [ '%d' ] );
-
-    }
-
-    function restore($gallery){
-        global $wpdb;
-
-        $table_name = $wpdb->prefix . 'document_galleries';
+        $table_name = $wpdb->prefix . 'document_media';
         $data = array(
             'deleted_date' => NULL
             );
         $where = array(
-            'id' => $gallery
+            'id' => $media
             );
         $wpdb->update($table_name, $data, $where);
+    }
+
+    function permanent_delete($media){
+        global $wpdb;
+
+        $table_name = $wpdb->prefix . 'document_media';
+        $wpdb->delete( $table_name, [ 'ID' => $media ], [ '%d' ] );
     }
 
     function process_bulk_action() {
 
         //Detect when a bulk action is being triggered...
         if( 'trash'===$this->current_action() ) {
-            if(is_array($_REQUEST['gallery'])){
-                foreach ($_REQUEST['gallery'] as $gallery) {
-                    $this->soft_delete($gallery);
+            if(is_array($_REQUEST['media'])){
+                foreach ($_REQUEST['media'] as $media) {
+                    $this->trash($media);
                 }
             }else{
-                $this->soft_delete($_REQUEST['gallery']);
+                $this->trash($_REQUEST['media']);
             }
             // echo('Items deleted (or they would be if we had items to delete)!');
-        }else if( 'restore'===$this->current_action()) {
-            if(is_array($_REQUEST['gallery'])){
-                foreach ($_REQUEST['gallery'] as $gallery) {
-                    $this->restore($gallery);
+        }else if( 'delete'===$this->current_action()) {
+            if(is_array($_REQUEST['media'])){
+                foreach ($_REQUEST['media'] as $media) {
+                    $this->permanent_delete($media);
                 }
             }else{
-                $this->restore($_REQUEST['gallery']);
+                $this->permanent_delete($_REQUEST['media']);
             }
-        }
-        else if( 'delete'===$this->current_action()) {
-            if(is_array($_REQUEST['gallery'])){
-                foreach ($_REQUEST['gallery'] as $gallery) {
-                    $this->hard_delete($gallery);
+        }else if( 'restore'===$this->current_action()) {
+            if(is_array($_REQUEST['media'])){
+                foreach ($_REQUEST['media'] as $set) {
+                    $this->restore($set);
                 }
             }else{
-                $this->hard_delete($_REQUEST['gallery']);
+                $this->restore($_REQUEST['media']);
             }
         }
 
@@ -307,13 +312,17 @@ class CDG_Gallery_Table extends WP_List_Table {
         global $wpdb;
        $views = array();
        $current = ( !empty($_REQUEST['customvar']) ? $_REQUEST['customvar'] : 'all');
-       $table_name = $wpdb->prefix . 'document_galleries';
-       $all_count = $wpdb->get_var("SELECT COUNT(*) FROM " . $table_name . " WHERE deleted_date IS NULL;");
-       $trash_count = $wpdb->get_var("SELECT COUNT(*) FROM " . $table_name . " WHERE deleted_date IS NOT NULL;");
+       $gallery_id = 0;
+        if (isset($_GET['id'])) {
+            $gallery_id = $_GET['id'];
+        }
+       $table_name = $wpdb->prefix . 'document_media';
+       $all_count = $wpdb->get_var("SELECT COUNT(*) FROM " . $table_name . " WHERE document_gallery_id='" . $gallery_id . "' AND deleted_date IS NULL;");
+       $delete_count = $wpdb->get_var("SELECT COUNT(*) FROM " . $table_name . " WHERE document_gallery_id='" . $gallery_id . "' AND deleted_date IS NOT NULL;");
        //All link
        $class = ($current == 'all' ? ' class="current"' :'');
        // $all_url = remove_query_arg('customvar');
-       $views['all'] = "<a href='?page=" . $_REQUEST['page'] . "' {$class} >All(" . $all_count . ")</a>";
+       $views['all'] = "<a href='?page=" . $_REQUEST['page'] . "&id=" . $gallery_id . "' {$class} >All(" . $all_count . ")</a>";
 
        // //active link
        // $active_url = add_query_arg('customvar','active');
@@ -322,8 +331,8 @@ class CDG_Gallery_Table extends WP_List_Table {
 
        //deleted link
        // $deleted_url = add_query_arg('customvar','deleted');
-       $class = ($current == 'deleted' ? ' class="current"' :'');
-       $views['trash'] = "<a href='?page=" . $_REQUEST['page'] . "&customvar=deleted' {$class} >Trash(" . $trash_count . ")</a>";
+       $class = ($current == 'trashed' ? ' class="current"' :'');
+       $views['trashed'] = "<a href='?page=" . $_REQUEST['page'] . "&id=" . $gallery_id . "&customvar=trashed' {$class} >Trashed(" . $delete_count . ")</a>";
 
        return $views;
     }
@@ -331,8 +340,8 @@ class CDG_Gallery_Table extends WP_List_Table {
     /** ************************************************************************
      * REQUIRED! This is where you prepare your data for display. This method will
      * usually be used to query the database, sort and filter the data, and generally
-     * get it ready to be displayed. At a minimum, we should set $this->items and
-     * $this->set_pagination_args(), although the following properties and methods
+     * get it ready to be displayed. At a minimum, we should media $this->items and
+     * $this->media_pagination_args(), although the following properties and methods
      * are frequently interacted with here...
      *
      * @global WPDB $wpdb
@@ -341,7 +350,7 @@ class CDG_Gallery_Table extends WP_List_Table {
      * @uses $this->get_columns()
      * @uses $this->get_sortable_columns()
      * @uses $this->get_pagenum()
-     * @uses $this->set_pagination_args()
+     * @uses $this->media_pagination_args()
      **************************************************************************/
     function prepare_items() {
         global $wpdb; //This is used only if making any database queries
@@ -354,7 +363,7 @@ class CDG_Gallery_Table extends WP_List_Table {
          * used to build the value for our _column_headers property.
          */
         $columns = $this->get_columns();
-        $hidden = array();
+        $hidden = array('id', 'sort_order');
         $sortable = $this->get_sortable_columns();
 
 
@@ -387,12 +396,16 @@ class CDG_Gallery_Table extends WP_List_Table {
 
         //this gets all/active/deleted
         $current = ( !empty($_REQUEST['customvar']) ? $_REQUEST['customvar'] : 'all');
-        $table_name = $wpdb->prefix . 'document_galleries';
-        $query = 'SELECT * FROM ' . $table_name . ';';
+        $table_name = $wpdb->prefix . 'document_media';
+        $id = 0;
+        if (isset($_GET['id'])) {
+            $id = $_GET['id'];
+        }
+        $query = 'SELECT * FROM ' . $table_name . ' WHERE document_gallery_id=' . $id . ';';
         if ($current == 'all'){
-            $query = 'SELECT * FROM ' . $table_name . ' WHERE deleted_date IS NULL ORDER BY name;';
-        }else if ($current == 'deleted'){
-            $query = 'SELECT * FROM ' . $table_name . ' WHERE deleted_date IS NOT NULL;';
+            $query = 'SELECT * FROM ' . $table_name . ' WHERE document_gallery_id=' . $id . ' AND deleted_date IS NULL ORDER BY sort_order;';
+        }else if ($current == 'trashed'){
+            $query = 'SELECT * FROM ' . $table_name . ' WHERE document_gallery_id=' . $id . ' AND deleted_date IS NOT NULL;';
         }
         $data = $wpdb->get_results($query, ARRAY_A);
         /**
@@ -444,7 +457,13 @@ class CDG_Gallery_Table extends WP_List_Table {
         /**
          * Decide how many records per page to show
          */
-        $per_page = 20;
+
+        $per_page = 1;
+
+        if ( $total_items > 0 ) {
+            $per_page = $total_items;
+        }
+
 
         /**
          * The WP_List_Table class does not handle pagination for us, so we need
@@ -465,7 +484,7 @@ class CDG_Gallery_Table extends WP_List_Table {
         /**
          * REQUIRED. We also have to register our pagination options & calculations.
          */
-        $this->set_pagination_args( array(
+        $this->media_pagination_args( array(
             'total_items' => $total_items,                  //WE have to calculate the total number of items
             'per_page'    => $per_page,                     //WE have to determine how many items to show on a page
             'total_pages' => ceil($total_items/$per_page)   //WE have to calculate the total number of pages
@@ -474,3 +493,41 @@ class CDG_Gallery_Table extends WP_List_Table {
 
 
 }
+
+// class Update_Media_Order {
+
+//     public static function update_media_order(){
+//         $order_list = $_POST['order'];
+//         // echo "function working";
+//         global $wpdb;
+//         $table_name = $wpdb->prefix . 'document_media';
+
+//         for($i = 0; $i<count($order_list); $i++){
+//             $data = array(
+//                 'sort_order' => $i
+//                 );
+//             $where = array(
+//                 'id' => $order_list[$i]
+//                 );
+//             $wpdb->update($table_name, $data, $where);
+//         }
+//     }
+
+// }
+
+// function update_media_order(){
+//     $order_list = $_POST['order'];
+//     // echo "function working";
+//     global $wpdb;
+//     $table_name = $wpdb->prefix . 'document_media';
+
+//     for($i = 0; $i<count($order_list); $i++){
+//         $data = array(
+//             'sort_order' => $i
+//             );
+//         $where = array(
+//             'id' => $order_list[$i]
+//             );
+//         $wpdb->update($table_name, $data, $where);
+//     }
+// }

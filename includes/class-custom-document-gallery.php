@@ -72,7 +72,12 @@ class Custom_Document_Gallery {
 		} else {
 			$this->version = '1.0.0';
 		}
-		$this->plugin_name = 'custom-document-gallery';
+
+		if ( defined( 'CUSTOM_DOCUMENT_GALLERY_PLUGIN_NAME' ) ) {
+			$this->plugin_name = CUSTOM_DOCUMENT_GALLERY_PLUGIN_NAME;
+		} else {
+			$this->plugin_name = 'custom-document-galler';
+		}
 
 		$this->load_dependencies();
 		$this->set_locale();

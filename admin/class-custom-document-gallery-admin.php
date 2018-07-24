@@ -117,6 +117,7 @@ class Custom_Document_Gallery_Admin {
 
 	public function create_admin_menu() {
 		$this->admin_main_page();
+		$this->admin_gallery_edit_page();
 		$this->admin_settings_page();
 		$this->admin_help_page();
 	}
@@ -148,7 +149,33 @@ class Custom_Document_Gallery_Admin {
 	}
 
 	/**
-	 * Register the main plugin menu page.
+	 * Register the plugin gallery edit page.
+	 *
+	 * @since    1.0.0
+	 */
+	public function admin_gallery_edit_page() {
+	    add_submenu_page(
+	        $this->plugin_name,
+	        'Edit Gallery',
+	        'Edit Gallery',
+	        'manage_options',
+	        $this->plugin_name . '-gallery-edit',
+	        array( $this, 'load_admin_gallery_edit_page_content' ),
+	        ''
+	    );
+	}
+
+	/**
+	 * Load the plugin gallery edit page partial.
+	 *
+	 * @since    1.0.0
+	 */
+	public function load_admin_gallery_edit_page_content() {
+	    require_once plugin_dir_path( __FILE__ ). 'partials/custom-document-gallery-admin-gallery-edit-page.php';
+	}
+
+	/**
+	 * Register the plugin settings page.
 	 *
 	 * @since    1.0.0
 	 */
@@ -165,7 +192,7 @@ class Custom_Document_Gallery_Admin {
 	}
 
 	/**
-	 * Load the main admin menu page partial.
+	 * Load the plugin settings page partial.
 	 *
 	 * @since    1.0.0
 	 */
@@ -174,7 +201,7 @@ class Custom_Document_Gallery_Admin {
 	}
 
 	/**
-	 * Register the main plugin menu page.
+	 * Register the plugin help page.
 	 *
 	 * @since    1.0.0
 	 */
@@ -191,7 +218,7 @@ class Custom_Document_Gallery_Admin {
 	}
 
 	/**
-	 * Load the main admin menu page partial.
+	 * Load the plugin help page partial.
 	 *
 	 * @since    1.0.0
 	 */

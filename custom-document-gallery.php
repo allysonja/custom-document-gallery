@@ -30,6 +30,13 @@ if ( ! defined( 'WPINC' ) ) {
 	die;
 }
 
+
+/**
+ * Plugin name.
+ */
+define( 'CUSTOM_DOCUMENT_GALLERY_PLUGIN_NAME', 'custom-document-gallery' );
+
+
 /**
  * Current plugin version.
  * Start at version 1.0.0 and use SemVer - https://semver.org
