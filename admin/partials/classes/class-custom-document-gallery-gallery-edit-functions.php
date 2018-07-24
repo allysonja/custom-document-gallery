@@ -169,19 +169,6 @@ class Custom_Document_Gallery_Gallery_Edit {
 	            </div>
 	        </form>
 	    </div>
-	    <script type="text/javascript">
-	        function showImageUpload() {
-	            // console.log("Show image upload form");
-	            document.getElementById("image-upload-form").style.display = "block";
-	            document.getElementById('video-upload-form').style.display = "none";
-	        }
-
-	        function showVideoUpload() {
-	            // console.log("Show video upload form");
-	            document.getElementById('video-upload-form').style.display = "block";
-	            document.getElementById("image-upload-form").style.display = "none";
-	        }
-	    </script>
 	    <?php
 	}
 
@@ -248,35 +235,16 @@ class Custom_Document_Gallery_Gallery_Edit {
 	 */
 	public function media_upload_meta_box_handler($item){
 	    ?>
-	    <p> Which type of file(s) do you want to upload? </p>
-	    <button type="button" onclick="showImageUpload()" id="image-upload-button">Image</button>
-	    <button type="button" onclick="showVideoUpload()" id="video-upload-button">Video</button>
-	    <br>
-	    <br>
 	    <table cellspacing="2" cellpadding="5" style="width: 100%;" class="form-table"
 	        <tbody>
 	            <tr>
 	                <form action="<?php CUSTOM_DOCUMENT_GALLERY_PLUGIN_NAME . '-gallery-edit'; ?>" method="post" enctype="multipart/form-data">
-	                    <div style="display: none;" id="image-upload-form">
-	                        Select Image File(s) to Upload:
+	                    <div id="file-upload-form">
+	                        Select File(s) to Upload:
+	                        <br>
 	                        <input type="file" multiple="multiple" name="file[]">
 	                        <br>
-	                        <input type="submit" name="cdg-upload-images" value="Upload">
-	                    </div>
-	                </form>
-	            </tr>
-	        </tbody>
-	    </table>
-	    <table cellspacing="2" cellpadding="5" style="width: 100%;" class="form-table">
-	        <tbody>
-	            <tr>
-	                <form action="<?php CUSTOM_DOCUMENT_GALLERY_PLUGIN_NAME . '-gallery-edit'; ?>" method="post" enctype="multipart/form-data" style="display: none;">
-	                    <div id="video-upload-form" style="display: none;">
-	                        Select Video to Upload and Snapshot:
-	                        <br>
-	                        Video and Snapshot, one Video at a time <input type="file" multiple="multiple" name="file[]">
-	                        <br>
-	                        <input type="submit" name="cdg-upload-videos" value="Upload">
+	                        <input type="submit" name="cdg-upload-files" value="Upload">
 	                    </div>
 	                </form>
 	            </tr>

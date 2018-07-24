@@ -17,7 +17,7 @@
  * the form of the gallery edit page and updating database information
  */
 
-if (isset($_POST['cdg-upload-images']) || isset($_POST['cdg-upload-videos']) || isset($_POST['cdg-upload-thumb'])) {
+if (isset($_POST['cdg-upload-files']) || isset($_POST['cdg-upload-thumb'])) {
   include (plugin_dir_path( dirname( __FILE__ ) ) . 'partials/classes/class-custom-document-gallery-upload-media.php');
   $upload_media = new Custom_Document_Gallery_Upload_Media($_REQUEST['id']);
 }

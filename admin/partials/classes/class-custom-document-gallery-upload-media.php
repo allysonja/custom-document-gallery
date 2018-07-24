@@ -106,7 +106,7 @@ class Custom_Document_Gallery_Upload_Media {
 			$document_url = $this->base_url . $fileName;
 
 			$fileType = strtolower(pathinfo($targetFilePath,PATHINFO_EXTENSION));
-			if(!empty($file["name"])){
+			if(isset($_POST["cdg-upload-files"]) && !empty($file["name"])){
 			    // Allow certain file formats
 			    $documentTypes = array('pdf','doc','docx');
 			    if(in_array($fileType, $documentTypes)){
@@ -219,7 +219,7 @@ class Custom_Document_Gallery_Upload_Media {
 		if(file_exists($path . $file_name)){
 			$extension_pos = strrpos($orig_name, '.');
 			$new_file_name = substr($orig_name, 0, $extension_pos) . '(' . $i . ')' . substr($orig_name, $extension_pos);
-			return resolve_duplicate($path, $orig_name, $i+1, $new_file_name);
+			return $this->resolve_duplicate($path, $orig_name, $i+1, $new_file_name);
 		}else{
 			return $file_name;
 		}
