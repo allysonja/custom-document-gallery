@@ -116,6 +116,12 @@ class Custom_Document_Gallery_Activator {
 		}
 	}
 
+	/**
+	 * Create directories for uploads.
+	 *
+	 *
+	 * @since    1.0.0
+	 */
 	private static function create_directories(){
 		$upload_dir = wp_upload_dir();
 		$base_dir = $upload_dir["basedir"] . '/custom_document_gallery/';
@@ -123,6 +129,12 @@ class Custom_Document_Gallery_Activator {
 		self::create_path($dir);
 	}
 
+	/**
+	 * Create paths for upload directories.
+	 *
+	 *
+	 * @since    1.0.0
+	 */
 	private static function create_path($path) {
 	    if (is_dir($path)) return true;
 	    $prev_path = substr($path, 0, strrpos($path, '/', -2) + 1 );

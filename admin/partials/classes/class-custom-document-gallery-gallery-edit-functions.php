@@ -13,11 +13,8 @@
 /**
  * Gallery editing functions.
  *
- * Defines the plugin name, version, and two examples hooks for how to
- * enqueue the admin-specific stylesheet and JavaScript.
- *
  * @package    Custom_Document_Gallery
- * @subpackage Custom_Document_Gallery/admin
+ * @subpackage Custom_Document_Gallery/admin/partials/classes
  * @author     Sonja Linton <sonjamw17@gmail.com>
  */
 
@@ -54,6 +51,7 @@ class Custom_Document_Gallery_Gallery_Edit {
 	 */
 	private function load_dependancies() {
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'classes/class-custom-document-gallery-media-table.php';
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'classes/class-custom-document-gallery-upload-media.php';
 	}
 
 	/**
@@ -73,7 +71,7 @@ class Custom_Document_Gallery_Gallery_Edit {
 	        'name' => '',
 	    );
 
-	    // print_r($_REQUEST);
+	    print_r($_REQUEST);
 	    // here we are verifying does this request is post back and have correct nonce
 	    if ( isset($_REQUEST['nonce']) && wp_verify_nonce($_REQUEST['nonce'], basename(__FILE__))) {
 	        // print_r($_REQUEST);
@@ -258,12 +256,12 @@ class Custom_Document_Gallery_Gallery_Edit {
 	    <table cellspacing="2" cellpadding="5" style="width: 100%;" class="form-table"
 	        <tbody>
 	            <tr>
-	                <form action="<?php plugin_dir_path( __FILE__ ) . 'upload-media.php'; ?>" method="post" enctype="multipart/form-data">
+	                <form action="<?php CUSTOM_DOCUMENT_GALLERY_PLUGIN_NAME . '-gallery-edit'; ?>" method="post" enctype="multipart/form-data">
 	                    <div style="display: none;" id="image-upload-form">
 	                        Select Image File(s) to Upload:
 	                        <input type="file" multiple="multiple" name="file[]">
 	                        <br>
-	                        <input type="submit" name="upload-images" value="Upload">
+	                        <input type="submit" name="cdg-upload-images" value="Upload">
 	                    </div>
 	                </form>
 	            </tr>
@@ -272,13 +270,13 @@ class Custom_Document_Gallery_Gallery_Edit {
 	    <table cellspacing="2" cellpadding="5" style="width: 100%;" class="form-table">
 	        <tbody>
 	            <tr>
-	                <form action="<?php plugin_dir_path( __FILE__ ) . 'upload-media.php'; ?>" method="post" enctype="multipart/form-data" style="display: none;">
+	                <form action="<?php CUSTOM_DOCUMENT_GALLERY_PLUGIN_NAME . '-gallery-edit'; ?>" method="post" enctype="multipart/form-data" style="display: none;">
 	                    <div id="video-upload-form" style="display: none;">
 	                        Select Video to Upload and Snapshot:
 	                        <br>
 	                        Video and Snapshot, one Video at a time <input type="file" multiple="multiple" name="file[]">
 	                        <br>
-	                        <input type="submit" name="upload-videos" value="Upload">
+	                        <input type="submit" name="cdg-upload-videos" value="Upload">
 	                    </div>
 	                </form>
 	            </tr>
