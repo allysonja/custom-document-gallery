@@ -102,6 +102,7 @@ class Custom_Document_Gallery_Activator {
 				document_gallery_id mediumint(9) NOT NULL,
 				created_date datetime DEFAULT CURRENT_TIMESTAMP NOT NULL,
 				updated_date datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP NOT NULL,
+				deleted_date datetime,
 				document_url varchar(255) NOT NULL,
 				thumbnail_url varchar(255) NOT NULL,
 				sort_order int NOT NULL DEFAULT 2147483647,
