@@ -102,19 +102,18 @@ class Custom_Document_Gallery_Upload_Media {
 			$fileName = basename($file["name"]);
 
 			$fileName = $this->resolve_duplicate($this->base_dir, $fileName);
-			$targetFilePath = $this->basedir . $fileName;
-			$document_url = $this->baseurl . $fileName;
+			$targetFilePath = $this->base_dir . $fileName;
+			$document_url = $this->base_url . $fileName;
 
 			$fileType = strtolower(pathinfo($targetFilePath,PATHINFO_EXTENSION));
 			if(!empty($file["name"])){
 			    // Allow certain file formats
-			    $imageTypes = array('jpg','png','jpeg','gif');
-			    if(in_array($fileType, $imageTypes)){
+			    $documentTypes = array('pdf','doc','docx');
+			    if(in_array($fileType, $documentTypes)){
 
 			        // Upload file to server
 			        if(move_uploaded_file($file["tmp_name"], $targetFilePath)){
-			        	// echo $file["tmp_name"];
-			        	// resize_uploaded_image($fileName);
+
 			            // Insert image file name into database
 			            $insert = $wpdb->query("INSERT into $table_name (name, created_date, document_gallery_id, document_url, thumbnail_url) VALUES ('" . $fileName . "', NOW(), '" . $this->gallery_id . "', '" . $document_url . "', '" . $document_url . "')");
 			            if($insert){
@@ -126,7 +125,7 @@ class Custom_Document_Gallery_Upload_Media {
 			            $notice = "Sorry, there was an error uploading your file.";
 			        }
 			    }else{
-			        $notice = 'Sorry, only JPG, JPEG, PNG, & GIF files are allowed to upload.';
+			        $notice = 'Sorry, only PDF, DOC, and DOCX files are allowed to upload.';
 			    }
 			}else{
 			    $notice = 'Please select a file to upload.';

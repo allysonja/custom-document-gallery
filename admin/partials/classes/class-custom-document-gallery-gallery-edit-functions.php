@@ -71,7 +71,7 @@ class Custom_Document_Gallery_Gallery_Edit {
 	        'name' => '',
 	    );
 
-	    print_r($_REQUEST);
+	    // print_r($_REQUEST);
 	    // here we are verifying does this request is post back and have correct nonce
 	    if ( isset($_REQUEST['nonce']) && wp_verify_nonce($_REQUEST['nonce'], basename(__FILE__))) {
 	        // print_r($_REQUEST);
