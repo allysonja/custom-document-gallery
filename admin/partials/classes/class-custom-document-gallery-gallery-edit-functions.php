@@ -116,9 +116,7 @@ class Custom_Document_Gallery_Gallery_Edit {
 	    }
 
 	    // here we adding our custom meta box
-	    add_meta_box('gallery_form_meta_box', 'Gallery', array( $this, 'gallery_form_meta_box_handler' ), 'gallery', 'normal', 'default');
-	    add_meta_box('gallery_media_meta_box', 'Media', array( $this, 'media_table_meta_box_handler' ), 'gallery media', 'normal', 'default');
-	    add_meta_box('gallery_media_upload_meta_box', 'Upload Media', array( $this, 'media_upload_meta_box_handler' ), 'media upload', 'normal', 'default');
+	    $this->add_meta_boxes();
 
 	    ?>
 	    <div class="wrap">
@@ -170,6 +168,18 @@ class Custom_Document_Gallery_Gallery_Edit {
 	        </form>
 	    </div>
 	    <?php
+	}
+
+	/**
+	 * Add meta boxes all in one function.
+	 * $item is row
+	 *
+	 * @param $item
+	 */
+	public function add_meta_boxes() {
+		add_meta_box('gallery_form_meta_box', 'Gallery', array( $this, 'gallery_form_meta_box_handler' ), 'gallery', 'normal', 'default');
+	    add_meta_box('gallery_media_meta_box', 'Media', array( $this, 'media_table_meta_box_handler' ), 'gallery media', 'normal', 'default');
+	    add_meta_box('gallery_media_upload_meta_box', 'Upload Media', array( $this, 'media_upload_meta_box_handler' ), 'media upload', 'normal', 'default');
 	}
 
 	/**
