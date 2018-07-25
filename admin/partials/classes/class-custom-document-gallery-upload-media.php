@@ -114,8 +114,19 @@ class Custom_Document_Gallery_Upload_Media {
 			        // Upload file to server
 			        if(move_uploaded_file($file["tmp_name"], $targetFilePath)){
 
+			        	$extension_pos = strrpos($fileName, '.');
+						$thumbnailName = substr($fileName, 0, $extension_pos) . 'png';
+						$thumbnailName = $this->resolve_duplicate($this->base_dir, $thumbnailName);
+
+			        	$save_to = $this->base_dir . $thumbnailName;
+			        	$thumbnail_url = $this->base_url . $thumbnailName;
+
+			        	$img = new imagick($targetFilePath.'[0]');
+			        	$img->setImageFormat('png');
+			        	$img->writeImage($save_to);
+
 			            // Insert image file name into database
-			            $insert = $wpdb->query("INSERT into $table_name (name, created_date, document_gallery_id, document_url, thumbnail_url) VALUES ('" . $fileName . "', NOW(), '" . $this->gallery_id . "', '" . $document_url . "', '" . $document_url . "')");
+			            $insert = $wpdb->query("INSERT into $table_name (name, created_date, document_gallery_id, document_url, thumbnail_url) VALUES ('" . $fileName . "', NOW(), '" . $this->gallery_id . "', '" . $document_url . "', '" . $thumbnail_url . "')");
 			            if($insert){
 			                $message = "The file " . $fileName . " has been uploaded successfully.";
 			            }else{
