@@ -188,7 +188,7 @@ class Custom_Document_Gallery_Gallery_Edit {
 	            </th>
 	            <td>
 	                <input id="name" name="name" type="text" style="width: 95%" value="<?php echo esc_attr($item['name'])?>"
-	                       size="50" class="code" placeholder="<?php _e('Name of Gallery Set', 'custom_document_gallery')?>" required>
+	                       size="50" class="code" placeholder="<?php _e('Name of Gallery', 'custom_document_gallery')?>" required>
 	            </td>
 	        </tr>
 	        </tbody>
