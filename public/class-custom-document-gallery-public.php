@@ -119,7 +119,9 @@ class Custom_Document_Gallery_Public {
 		  'id' => 1,
 		), $atts));
 
-		require_once plugin_dir_path( __FILE__ ). 'partials/custom-document-gallery-public-shortcode-template.php';
+		ob_start();
+		include( plugin_dir_path( __FILE__ ). 'partials/custom-document-gallery-public-shortcode-template.php' );
+		return ob_get_clean();
 	}
 
 }
