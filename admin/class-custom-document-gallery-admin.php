@@ -156,7 +156,7 @@ class Custom_Document_Gallery_Admin {
 	 */
 	public function admin_gallery_edit_page() {
 	    add_submenu_page(
-	        $this->plugin_name,
+	        null,
 	        'Edit Gallery',
 	        'Edit Gallery',
 	        'manage_options',
@@ -182,7 +182,7 @@ class Custom_Document_Gallery_Admin {
 	 */
 	public function admin_media_edit_page() {
 	    add_submenu_page(
-	        $this->plugin_name,
+	        null,
 	        'Edit Media',
 	        'Edit Media',
 	        'manage_options',
