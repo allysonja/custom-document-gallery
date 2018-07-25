@@ -124,7 +124,7 @@ class CDG_Media_Table extends WP_List_Table {
         }else{
             $actions = array(
                 'view' => sprintf('<a href="%s" target="_blank">%s</a>', $item['document_url'], __('View', 'mgpv_example')),
-                'edit'      => sprintf('<a href="?page=media-form&gallery-id=%s&id=%s">Edit</a>', $item['document_gallery_id'], $item['id']),
+                'edit'      => sprintf('<a href="?page=%s&gallery-id=%s&id=%s">Edit</a>', CUSTOM_DOCUMENT_GALLERY_PLUGIN_NAME . '-media-edit', $item['document_gallery_id'], $item['id']),
                 'trash'    => sprintf('<a href="?page=%s&action=%s&id=%s&media=%s">Trash</a>',$_REQUEST['page'], 'trash', $gallery_id, $item['id']),
             );
         }
