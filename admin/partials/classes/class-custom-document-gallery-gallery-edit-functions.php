@@ -173,8 +173,6 @@ class Custom_Document_Gallery_Gallery_Edit {
 	/**
 	 * Add meta boxes all in one function.
 	 * $item is row
-	 *
-	 * @param $item
 	 */
 	public function add_meta_boxes() {
 		add_meta_box('gallery_form_meta_box', 'Gallery', array( $this, 'gallery_form_meta_box_handler' ), 'gallery', 'normal', 'default');
