@@ -61,15 +61,25 @@ class Custom_Document_Gallery_Upload_Media {
 		$this->base_dir = $upload_dir["basedir"] . '/custom_document_gallery/';
 		$this->base_url = $upload_dir["baseurl"] . '/custom_document_gallery/';
 		$this->file_ary = $this->reArrayFiles($_FILES['file']);
-		$this->upload_media($this->file_ary);
-
-		// $this->echo_all_variables();
+		$this->upload_sorter();
 	}
 
-	public function echo_all_variables() {
-		var_dump($this->gallery_id);
-		var_dump($this->base_dir);
-		var_dump($this->file_ary);
+	/**
+	 * Decide which upload function to run.
+	 *
+	 * Decide which upload functin to run, upload_media or upload_thumbnail, based on the post request parameter.
+	 *
+	 * @since    1.0.0
+	 */
+
+	public function upload_sorter() {
+		if (isset($_POST["cdg-upload-files"])) {
+			$this->upload_media($this->file_ary);
+		} else if (isset($_POST["cdg-upload-thumb"])) {
+			$this->upload_thumbnail($this->file_ary);
+		} else {
+			echo "Error";
+		}
 	}
 
 	/**
@@ -94,6 +104,13 @@ class Custom_Document_Gallery_Upload_Media {
 	    return $file_ary;
 	}
 
+	/**
+	 * Upload media.
+	 *
+	 * Upload documents, then take the first page of that document and make it into a png thumbnail image using imagick.
+	 *
+	 * @since    1.0.0
+	 */
 	public function upload_media($file_ary) {
 		global $wpdb;
 		$table_name = $wpdb->prefix . 'document_media';
@@ -151,6 +168,58 @@ class Custom_Document_Gallery_Upload_Media {
 		        <?php endif;?>
 			<br>
 		<?php
+		}
+	}
+
+	/**
+	 * Upload thumbnail.
+	 *
+	 * Upload new chosen thumbnail image and replace old url with new thumbnail url.
+	 *
+	 * @since    1.0.0
+	 */
+	public function upload_thumbnail($file_ary) {
+
+		global $wpdb;
+		$table_name = $wpdb->prefix . 'document_media';
+
+		if (count($file_ary) == 1) {
+			foreach ($file_ary as $file) {
+				$fileName = basename($file["name"]);
+				$media_id = $_GET['id'];
+				$fileName = $this->resolve_duplicate($this->base_dir, $fileName);
+				$targetFilePath = $this->base_dir . $fileName;
+				$thumbnail_url = $this->base_url . $fileName;
+
+				$fileType = pathinfo($targetFilePath,PATHINFO_EXTENSION);
+				if(isset($_POST["cdg-upload-thumb"]) && !empty($file["name"])){
+				    // Allow certain file formats
+				    $imageTypes = array('jpg','png','jpeg','gif');
+				    if(in_array($fileType, $imageTypes)){
+
+				        // Upload file to server
+				        if(move_uploaded_file($file["tmp_name"], $targetFilePath)){
+				        	// echo $file["tmp_name"];
+				            // Insert image file name into database
+				            $result = $wpdb->update($table_name, array('thumbnail_url' => $thumbnail_url), array('id' => $media_id));
+				            if($result){
+				                $message = "The file " . $fileName . " has been uploaded successfully.";
+				            }else{
+				                $notice = "File upload failed, please try again.";
+				            }
+				        }else{
+				            $notice = "Sorry, there was an error uploading your file.";
+				        }
+				    }else{
+				        $notice = 'Sorry, only JPG, JPEG, PNG, & GIF files are allowed to upload.';
+				    }
+				}else{
+				    $notice = 'Please select a file to upload.';
+				}
+			}
+
+	 	}else{
+			$notice = 'You can only upload one file as the alternate thumbnail.';
 		}
 	}
 

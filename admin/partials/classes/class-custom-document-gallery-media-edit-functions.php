@@ -91,7 +91,7 @@ class Custom_Document_Gallery_Media_Edit {
 	                } else {
 	                    $notice = __('There was an error while updating item', 'custom-document-gallery');
 	                }
-	            } else if (isset($_REQUEST['upload-thumb'])) {
+	            } else if (isset($_REQUEST['cdg-upload-thumb'])) {
 	                $query = "SELECT thumbnail_url FROM " . $table_name . " WHERE id =" . $item['id'];
 	                $result = $wpdb->get_results($query, ARRAY_A);
 	                $item['thumbnail_url'] = $result[0]['thumbnail_url'];
@@ -130,7 +130,7 @@ class Custom_Document_Gallery_Media_Edit {
 	        <div id="message" class="updated"><p><?php echo $message ?></p></div>
 	        <?php endif;?>
 
-	        <form id="gallery_form" method="POST">
+	        <form id="media_form" method="POST" enctype="multipart/form-data">
 	            <input type="hidden" name="nonce" value="<?php echo wp_create_nonce(basename(__FILE__))?>"/>
 	            <?php /* NOTICE: here we storing id to determine will be item added or updated */ ?>
 	            <input type="hidden" name="id" value="<?php echo $item['id'] ?>"/>
