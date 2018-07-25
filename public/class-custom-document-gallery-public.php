@@ -114,7 +114,11 @@ class Custom_Document_Gallery_Public {
 	 *
 	 * @since    1.0.0
 	 */
-	public function doc_gallery_shortcode_function() {
+	public function doc_gallery_shortcode_function( $atts ) {
+		extract(shortcode_atts(array(
+		  'id' => 1,
+		), $atts));
+
 		require_once plugin_dir_path( __FILE__ ). 'partials/custom-document-gallery-public-shortcode-template.php';
 	}
 
