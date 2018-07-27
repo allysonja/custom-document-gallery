@@ -15,7 +15,10 @@
  * @wordpress-plugin
  * Plugin Name:       Custom Document Gallery
  * Plugin URI:        http://example.com/custom-document-gallery-uri/
- * Description:       This is a short description of what the plugin does. It's displayed in the WordPress admin area.
+ * Description:       Create document galleries easily with this plugin! Create new
+ *					  galleries in the backend and add documents to it. Then, just use
+ * 					  the shortcode in the right page to render your custom document
+ * 					  gallery!
  * Version:           1.0.0
  * Author:            Sonja Linton
  * Author URI:        http://example.com/
